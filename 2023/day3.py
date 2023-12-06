@@ -6,13 +6,12 @@ def main():
 def part_one():
     schematic = [line for line in open('day3-input.txt', 'r').readlines()]
     sum_of_parts = 0
-    valid = '1234567890'
     for i in range(len(schematic)):
         number = None
         start_column = 0
         for j in range(len(schematic[i])):
             if j > 0:  # All but first char in row
-                if schematic[i][j] in valid:  # Current char is digit
+                if schematic[i][j].isdigit():  # Current char is digit
                     if number is not None:  # Current number is valid. This will catch any valid cases where previous char is digit
                         number += schematic[i][j]
                     elif schematic[i][j-1] == '.':  # If previous char is not symbol, initialize new number
@@ -25,7 +24,7 @@ def part_one():
                     if number is not None: 
                         sum_of_parts += check_number(number, schematic, row=i, start_column=start_column, end_column=j)
                     number = None
-            elif schematic[i][j] in valid:  # First char in row is number
+            elif schematic[i][j].isdigit():  # First char in row is number
                 number = schematic[i][j]
                                 
     print(f'Part 1: {sum_of_parts}')
@@ -37,13 +36,12 @@ def part_two():
     schematic = [line for line in open('day3-input.txt', 'r').readlines()]
     gear_dict = defaultdict(list)
     sum_of_ratios = 0
-    valid = '1234567890'
     for i in range(len(schematic)):
         number = None
         start_column = 0
         for j in range(len(schematic[i])):
             if j > 0:  # All but first char in row
-                if schematic[i][j] in valid:  # Current char is digit
+                if schematic[i][j].isdigit():  # Current char is digit
                     if number is not None:  # Current number is valid. This will catch any valid cases where previous char is digit
                         number += schematic[i][j]
                     elif schematic[i][j-1] == '.':  # If previous char is not symbol, initialize new number
@@ -58,7 +56,7 @@ def part_two():
                         for gear in gears:
                             gear_dict[gear].append(number)
                     number = None
-            elif schematic[i][j] in valid:  # First char in row is number
+            elif schematic[i][j].isdigit():  # First char in row is number
                 number = schematic[i][j]
     for gear in gear_dict:
         if len(gear_dict[gear]) == 2:
@@ -68,7 +66,6 @@ def part_two():
                     
 
 def check_gears(number, schematic, row, start_column, end_column):
-    check = '.1234567890'
     gears = []
     def test_rows(start, end):    
         # Test rows above and below
@@ -107,7 +104,6 @@ def check_gears(number, schematic, row, start_column, end_column):
     
     
 def check_number(number, schematic, row, start_column, end_column):
-    check = '.1234567890'
     def test_rows(test_string, start, end):    
         # Test rows above and below
         if 0 < row < len(schematic)-1:  # Most common case, rows exist above and below
@@ -125,7 +121,7 @@ def check_number(number, schematic, row, start_column, end_column):
     
     # Test left/right, else build test string and compare above/below
     if 0 < start_column and end_column < len(schematic[row]) - 1:  # Most common case, number in the middle of a row
-        if schematic[row][start_column-1] not in check or schematic[row][end_column] not in check:
+        if schematic[row][start_column-1] != '.' or schematic[row][end_column] != '.':
             return int(number)
         test_string = '.' * (len(number) + 2)
         return test_rows(test_string, start_column-1, end_column+1)
@@ -133,9 +129,9 @@ def check_number(number, schematic, row, start_column, end_column):
         test_string == '.' * len(number)
         return test_rows(test_string, start=0, end=len(schematic[row]))
     else:  # Number is either first in row or last in row
-        if start_column == 0 and schematic[row][end_column] not in check:
+        if start_column == 0 and schematic[row][end_column] != '.':
             return int(number)
-        elif end_column == len(schematic[row]) - 1 and schematic[row][start_column-1] not in check:
+        elif end_column == len(schematic[row]) - 1 and schematic[row][start_column-1] != '.':
             return int(number)
         test_string = '.' * (len(number) + 1)
         if start_column == 0:
