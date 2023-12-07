@@ -47,8 +47,8 @@ def part_two():
             candidate_seeds -= found  # Remove found seeds from candidates
             
             # Check if new highest lower bound
-            if map_range[1] + 1 > high:
-                high = map_range[1] + 1
+            if map_range[1] > high:
+                high = map_range[1]
                 
             new_seeds.add(map_range[0])  # Add lower bounds of all given ranges
         new_seeds.add(high)  # Add lower bound of highest range, i.e. [high, inf)
